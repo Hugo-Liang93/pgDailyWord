@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:Excel.properties</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="file" class="java.io.File">
+        <constructor-arg name="pathname">
+            <value>${excelFileUrl}</value>
+        </constructor-arg>
+    </bean>
+    <bean id="fileInputStream" class="java.io.FileInputStream">
+        <constructor-arg name="file" ref="file"></constructor-arg>
+    </bean>
+    <bean id="folder" class="java.io.File">
+        <constructor-arg name="pathname">
+            <value>${excelFolderUrl}</value>
+        </constructor-arg>
+    </bean>
+    <bean id="appController" class="cn.anteater.controller.impl.AppControllerImpl">
+        <property name="fileUtils" ref="fileUtils"></property>
+        <property name="file" ref="file"></property>
+        <property name="excelService" ref="excelService"></property>
+    </bean>
+
+    <bean id="excelService" class="cn.anteater.service.impl.ExcelServiceImpl">
+        <property name="excelUtils" ref="excelUtils"></property>
+        <property name="fileInputStream" ref="fileInputStream"></property>
+    </bean>
+
+    <bean id="fileUtils" class="cn.anteater.utils.impl.FileUitlsImpl"></bean>
+    <bean id="excelUtils" class="cn.anteater.utils.impl.ExcelUtilsImpl"></bean>
+</beans>
