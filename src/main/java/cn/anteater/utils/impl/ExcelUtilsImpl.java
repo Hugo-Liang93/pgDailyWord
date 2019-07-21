@@ -2,6 +2,9 @@ package cn.anteater.utils.impl;
 
 import cn.anteater.utils.ExcelUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -30,6 +33,10 @@ public class ExcelUtilsImpl implements ExcelUtils {
             wb = new XSSFWorkbook(in);
         }
         return wb;
+    }
+
+    public Sheet createSheet(Workbook workbook, String sheetName){
+        return workbook.createSheet(sheetName);
     }
 
 }
