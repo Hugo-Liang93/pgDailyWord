@@ -33,6 +33,9 @@
     <bean id="excelService" class="cn.anteater.service.impl.ExcelServiceImpl">
         <property name="excelUtils" ref="excelUtils"></property>
         <property name="fileInputStream" ref="fileInputStream"></property>
+        <property name="formateFields">
+            <value>${formateFields}</value>
+        </property>
     </bean>
 
     <bean id="fileUtils" class="cn.anteater.utils.impl.FileUitlsImpl"></bean>

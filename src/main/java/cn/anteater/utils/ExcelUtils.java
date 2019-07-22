@@ -13,4 +13,6 @@ import java.io.InputStream;
 public interface ExcelUtils {
     public Workbook getWorkbok(FileInputStream in, File file) throws IOException;
     public Sheet createSheet(Workbook workbook,String sheetName);
+    public void copyCell(Cell orgCell,Cell targetCell);
+    public void formateNumCell(Cell cell,Cell targetCell,String typeStr);
 }
