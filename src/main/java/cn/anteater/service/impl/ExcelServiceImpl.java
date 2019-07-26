@@ -25,36 +25,43 @@ public class ExcelServiceImpl implements ExcelService {
         Sheet sheet =workbok.getSheetAt(0);
         Iterator<Row> iterator = sheet.iterator();
         Sheet sheet1 = excelUtils.createSheet(workbok,"new");
-        Set<String> materialSet = new HashSet<>();
-        Set<Integer> materialIndex = new HashSet<>();
-        materialSet.addAll(Arrays.asList(formateFields.split(",")));
+        Set<String> materialFormatSet = new HashSet<>();
+        Set<Integer> materialFormatIndex = new HashSet<>();
+        // 确定需要的列
+        Set<Integer> indexs = new HashSet<>();
+        materialFormatSet.addAll(Arrays.asList(formateFields.split(",")));
         // flag 判断是已经
         Boolean flag = false;
         int rownum=0;
         // 用于判断是否需要记录行
         while (iterator.hasNext()){
             Row row = iterator.next();
-            Iterator<Cell> iterator1 = row.iterator();
-
+            Iterator<Cell> iterator1 = row.cellIterator();
             Row newRow = sheet1.createRow(rownum++);
+            // 用于判断新
             int column = 0;
-            while (iterator1.hasNext()){
-                Cell orgCell = iterator1.next();
-                // 确定数据开始行
+            for (int i=0 ; i<row.getLastCellNum(); i++){
+                Cell orgCell = row.getCell(i,Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
                 if(orgCell.getCellType().equals(CellType.STRING) &&
                         orgCell.getStringCellValue().equals("Client")){
                     rownum=0;
                     newRow = sheet1.createRow(rownum++);
                     flag = true;
                 }
-                // 确定需要格式化数据行
-                if(flag && rownum==0 && materialSet.contains(orgCell.getStringCellValue())){
-                    materialIndex.add(column);
+                // 添加要处理得列以及需要格式化的列
+                if (flag){
+                    if (rownum==1 &&orgCell.getCellType().equals(CellType.STRING)){
+                        indexs.add(i);
+                        if (materialFormatSet.contains(orgCell.getStringCellValue())){
+                            materialFormatIndex.add(i);
+                        }
+                        excelUtils.copyCell(orgCell,newRow.createCell(column++));
+                    }if (rownum>1 && indexs.contains(i)){
+                        if (materialFormatIndex.contains(i)){
+                            excelUtils.formateNumCell(orgCell,newRow.createCell(column++),"0");
+                        }else excelUtils.copyCell(orgCell,newRow.createCell(column++));
+                    }
                 }
-                Cell targetCell = newRow.createCell(column++);
-                // 当FLAG等于true means t
-                if(flag && rownum>0) excelUtils.formateNumCell(orgCell,targetCell,"0");
-                else excelUtils.copyCell(orgCell,targetCell);
             }
         }
         FileOutputStream os = new FileOutputStream("C://Users//liang.wh.1//Desktop//Files//LalaFiles//ZTXXPV0104//FPC//xs//test.xlsx");
